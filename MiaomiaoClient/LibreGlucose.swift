@@ -10,11 +10,13 @@ import Foundation
 import LoopKit
 import HealthKit
 
+let defaults = UserDefaults.standard
+
 public struct LibreGlucose {
     public let unsmoothedGlucose: Double
     public var glucoseDouble: Double
-    public var glucose: UInt16 {
-        return UInt16(glucoseDouble.rounded())
+    public var glucose: Float {
+        return Float(glucoseDouble.rounded())
     }
     public var trend: UInt8
     public let timestamp: Date
@@ -27,7 +29,17 @@ extension LibreGlucose: GlucoseValue {
     }
     
     public var quantity: HKQuantity {
-        return HKQuantity(unit: .milligramsPerDeciliter, doubleValue: Double(glucose))
+        
+        if (defaults.object(forKey: "extraSlope") == nil) {
+            defaults.set("1.0", forKey: "extraSlope")
+        }
+        
+        if (defaults.object(forKey: "extraOffset") == nil) {
+            defaults.set("0.0", forKey: "extraOffset")
+        }
+        let extraSlope = defaults.float(forKey: "extraSlope")
+        let extraOffset = defaults.float(forKey: "extraOffset")
+        return HKQuantity(unit: .milligramsPerDeciliter, doubleValue: Double(glucose * extraSlope + extraOffset))
     }
 }
 

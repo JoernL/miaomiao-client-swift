@@ -431,6 +431,9 @@ public final class MiaoMiaoClientManager: CGMManager, MiaoMiaoBluetoothManagerDe
         case .newSensor:
             NSLog("dabear:: new libresensor detected")
             NotificationHelper.sendSensorChangeNotificationIfNeeded(hasChanged: true)
+            
+            resetExtraSlope()
+            resetExtraOffset()
             break
         case .noSensor:
             NSLog("dabear:: no libresensor detected")
@@ -510,6 +513,13 @@ public final class MiaoMiaoClientManager: CGMManager, MiaoMiaoBluetoothManagerDe
     }
     
     
+    public func resetExtraSlope() {
+        let defaults = UserDefaults.standard
+        defaults.set("1.0", forKey: "extraSlope")
+    }
     
-    
+    public func resetExtraOffset() {
+        let defaults = UserDefaults.standard
+        defaults.set("0.0", forKey: "extraOffset")
+    }
 }

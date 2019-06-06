@@ -11,7 +11,7 @@ import LoopKit
 import LoopKitUI
 import MiaomiaoClient
 
-
+let defaults = UserDefaults.standard
 
 public class MiaomiaoClientSettingsViewController: UITableViewController, SubViewControllerWillDisappear {
     public func onDisappear() {
@@ -84,6 +84,8 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
         case snooze
         case authentication
         case latestReading
+        case extraSlope
+        case extraOffset
         case sensorInfo
         case latestBridgeInfo
         case latestCalibrationData
@@ -91,7 +93,7 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
         
         case delete
 
-        static let count = 7
+        static let count = 10
     }
 
     override public func numberOfSections(in tableView: UITableView) -> Int {
@@ -104,6 +106,18 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
         case trend
         case footerChecksum
         static let count = 4
+    }
+    
+    private enum ExtraSlopeRow: Int {
+        case extraSlope
+        
+        static let count = 1
+    }
+    
+    private enum ExtraOffsetRow: Int {
+        case extraOffset
+        
+        static let count = 1
     }
     
     private enum LatestSensorInfoRow: Int {
@@ -148,6 +162,10 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
             return 1
         case .latestReading:
             return LatestReadingRow.count
+        case .extraSlope:
+            return 1
+        case .extraOffset:
+            return 1
         case .sensorInfo:
             return LatestSensorInfoRow.count
         case .delete:
@@ -235,6 +253,36 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
             cell.tintColor = .delete
             cell.isEnabled = true
             return cell
+            
+        case .extraSlope:
+            
+            if (defaults.object(forKey: "extraSlope") == nil)  {          defaults.set("1.0", forKey: "extraSlope")
+            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.className, for: indexPath) as! SettingsTableViewCell
+            
+            cell.textLabel?.text = LocalizedString("Extra Slope", comment: "Title of cell to set an Extra Slope")
+            let tokenLength = 0
+            cell.detailTextLabel?.text = defaults.object(forKey: "extraSlope") as? String ?? String()
+            
+            cell.accessoryType = .disclosureIndicator
+            
+            return cell
+            
+        case .extraOffset:
+            
+            if (defaults.object(forKey: "extraOffset") == nil)  {          defaults.set("0.0", forKey: "extraOffset")
+            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.className, for: indexPath) as! SettingsTableViewCell
+            
+            cell.textLabel?.text = LocalizedString("Extra Offset", comment: "Title of cell to set an Extra Offset")
+            let tokenLength = 0
+            cell.detailTextLabel?.text = defaults.object(forKey: "extraOffset") as? String ?? String()
+            
+            cell.accessoryType = .disclosureIndicator
+            
+            return cell
+            
+            
         case .latestBridgeInfo:
             let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.className, for: indexPath) as! SettingsTableViewCell
             
@@ -387,6 +435,10 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
             return LocalizedString("Sensor Info", comment: "Section title for latest sensor info")
         case .latestReading:
             return LocalizedString("Latest Reading", comment: "Section title for latest glucose reading")
+        case .extraSlope:
+            return nil
+        case .extraOffset:
+            return nil
         case .delete:
             return nil
         case .latestBridgeInfo:
@@ -424,6 +476,72 @@ public class MiaomiaoClientSettingsViewController: UITableViewController, SubVie
             }
 
             show(vc, sender: nil)
+            
+            
+        case .extraSlope:
+            
+            
+            guard let service = cgmManager?.miaomiaoService else {
+                NSLog("dabear:: no miaomiaoservice?")
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                break
+            }
+            let vc = AuthenticationViewController(authentication: service)
+            vc.authenticationObserver = { [weak self] (service) in
+                self?.cgmManager?.miaomiaoService = service
+                
+                var testvar: String
+                
+                let offset = KeychainManager()
+                
+                do{
+                    
+                    NSLog("dabear:: miaomiaoservice alter: setAutoCalibrateWebAccessToken called")
+                    try testvar = offset.setExtraSlope (accessToken: service.accessToken, url: service.url)
+                    
+                } catch {
+                    NSLog("dabear:: miaomiaoservice alter:could not permanently save setAutoCalibrateWebAccessToken")
+                }
+                
+                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                
+                defaults.set(testvar, forKey: "extraSlope")
+            }
+            
+            show(vc, sender: nil)
+            
+        case .extraOffset:
+            
+            
+            guard let service = cgmManager?.miaomiaoService else {
+                NSLog("dabear:: no miaomiaoservice?")
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                break
+            }
+            let vc = AuthenticationViewController(authentication: service)
+            vc.authenticationObserver = { [weak self] (service) in
+                self?.cgmManager?.miaomiaoService = service
+                
+                var testvar: String
+                
+                let offset = KeychainManager()
+                
+                do{
+                    
+                    NSLog("dabear:: miaomiaoservice alter: setAutoCalibrateWebAccessToken called")
+                    try testvar = offset.setExtraOffset (accessToken: service.accessToken, url: service.url)
+                    
+                } catch {
+                    NSLog("dabear:: miaomiaoservice alter:could not permanently save setAutoCalibrateWebAccessToken")
+                }
+                
+                self?.tableView.reloadRows(at: [indexPath], with: .none)
+                
+                defaults.set(testvar, forKey: "extraOffset")
+            }
+            
+            show(vc, sender: nil)
+            
         case .latestReading:
             tableView.deselectRow(at: indexPath, animated: true)
         case .delete:
