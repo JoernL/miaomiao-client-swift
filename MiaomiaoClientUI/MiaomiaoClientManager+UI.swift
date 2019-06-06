@@ -5,6 +5,7 @@
 //  Copyright © 2018 LoopKit Authors. All rights reserved.
 //
 
+import LoopKit
 import LoopKitUI
 import HealthKit
 import MiaomiaoClient
@@ -15,7 +16,7 @@ extension MiaoMiaoClientManager: CGMManagerUI {
         return MiaomiaoClientSetupViewController()
     }
 
-    public func settingsViewController(for glucoseUnit: HKUnit) -> UIViewController {
+    public func settingsViewController(for glucoseUnit: HKUnit) -> (UIViewController & CompletionNotifying) {
         return MiaomiaoClientSettingsViewController(cgmManager: self, glucoseUnit: glucoseUnit, allowsDeletion: true)
     }
 
