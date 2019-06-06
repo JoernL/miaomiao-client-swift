@@ -14,6 +14,7 @@ import MiaomiaoClient
 let defaults = UserDefaults.standard
 
 public class MiaomiaoClientSettingsViewController: UITableViewController, SubViewControllerWillDisappear, CompletionNotifying {
+    public var completionDelegate: CompletionDelegate?
     public func onDisappear() {
         // this is being called only from alarm and notifications ui
         // when they disappear
