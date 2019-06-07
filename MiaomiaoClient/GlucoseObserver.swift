@@ -58,7 +58,7 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+            AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
         }
             
         else if glucoseValue > 200 {
@@ -86,7 +86,8 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+            AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+            
         }
     }
 }
