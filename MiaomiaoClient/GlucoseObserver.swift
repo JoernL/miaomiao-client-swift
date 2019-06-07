@@ -16,6 +16,14 @@ var firstRun : Bool = true
 public class GlucoseObserver {
     
     
+   public func vibrate(count: Int) {
+        if count == 0 {
+            return
+        }
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate) { [weak self] in
+            self?.vibrate(count: count - 1)
+        }
+    }
     public func observeGlucose() {
         
         let glucoseValue = defaults.float(forKey: "glucoseValue")
@@ -58,7 +66,8 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+            vibrate(count: 3)
+            //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
         }
             
         else if glucoseValue > 200 {
@@ -86,7 +95,8 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+            vibrate(count: 3)
+             //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
             
         }
     }
