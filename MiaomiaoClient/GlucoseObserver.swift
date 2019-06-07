@@ -20,7 +20,7 @@ public class GlucoseObserver {
         if count == 0 {
             return
         }
-        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate) { [weak self] in
+        AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate) { [weak self] in
             self?.vibrate(count: count - 1)
         }
     }
@@ -43,6 +43,7 @@ public class GlucoseObserver {
             
         else if glucoseValue < 90 {
             
+            vibrate(count: 3)
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "LOW GLUCOSE"
@@ -66,12 +67,13 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            vibrate(count: 3)
+            
             //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
         }
             
         else if glucoseValue > 200 {
             
+            vibrate(count: 3)
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "HIGH GLUCOSE"
@@ -95,7 +97,7 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            vibrate(count: 3)
+            
              //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
             
         }
