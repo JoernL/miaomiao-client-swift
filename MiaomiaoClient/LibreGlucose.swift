@@ -11,6 +11,7 @@ import LoopKit
 import HealthKit
 
 let defaults = UserDefaults.standard
+public var observer = GlucoseObserver()
 
 public struct LibreGlucose {
     public let unsmoothedGlucose: Double
@@ -39,6 +40,9 @@ extension LibreGlucose: GlucoseValue {
         }
         let extraSlope = defaults.float(forKey: "extraSlope")
         let extraOffset = defaults.float(forKey: "extraOffset")
+        let glucoseValue = glucose * extraSlope + extraOffset
+        defaults.set(glucoseValue, forKey: "glucoseValue")
+        observer.observeGlucose()
         return HKQuantity(unit: .milligramsPerDeciliter, doubleValue: Double(glucose * extraSlope + extraOffset))
     }
 }
