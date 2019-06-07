@@ -13,17 +13,20 @@ import LoopKit
 
 var firstRun : Bool = true
 
-public class GlucoseObserver {
-    
-    
-   public func vibrate(count: Int) {
+extension UIDevice {
+    static func vibrate(count: Int) {
         if count == 0 {
             return
         }
-    AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate) { [weak self] in
-            self?.vibrate(count: count - 1)
-        }
+       AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+            vibrate(count: count - 1)
+        
     }
+}
+
+public class GlucoseObserver {
+    
+    
     public func observeGlucose() {
         
         let glucoseValue = defaults.float(forKey: "glucoseValue")
@@ -43,12 +46,7 @@ public class GlucoseObserver {
             
         else if glucoseValue < 90 {
             
-            vibrate(count: 3)
-            
-            AudioServicesAddSystemSoundCompletion(kSystemSoundID_Vibrate, nil, nil, { (customSoundId, _) -> Void in
-                AudioServicesDisposeSystemSoundID(customSoundId)
-            }, nil)
-            
+            UIDevice.vibrate(count: 3)
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "LOW GLUCOSE"
@@ -73,17 +71,11 @@ public class GlucoseObserver {
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
             
-            //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
         }
             
         else if glucoseValue > 200 {
             
-            vibrate(count: 3)
-            
-            AudioServicesAddSystemSoundCompletion(kSystemSoundID_Vibrate, nil, nil, { (customSoundId, _) -> Void in
-                AudioServicesDisposeSystemSoundID(customSoundId)
-            }, nil)
-            
+            UIDevice.vibrate(count: 3)
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "HIGH GLUCOSE"
@@ -108,7 +100,6 @@ public class GlucoseObserver {
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
             
-             //AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
             
         }
     }
