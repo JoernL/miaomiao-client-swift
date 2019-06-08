@@ -13,17 +13,6 @@ import LoopKit
 
 var firstRun : Bool = true
 
-extension UIDevice {
-    static func vibrate(count: Int) {
-        if count == 0 {
-            return
-        }
-       AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, nil)
-            vibrate(count: count - 1)
-        
-    }
-}
-
 public class GlucoseObserver {
     
     
@@ -46,7 +35,7 @@ public class GlucoseObserver {
             
         else if glucoseValue < 90 {
             
-            UIDevice.vibrate(count: 3)
+            AudioServicesPlayAlertSound(SystemSoundID(1107))
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "LOW GLUCOSE"
@@ -70,12 +59,12 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            
+            return
         }
             
         else if glucoseValue > 200 {
             
-            UIDevice.vibrate(count: 3)
+            AudioServicesPlayAlertSound(SystemSoundID(1107))
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "HIGH GLUCOSE"
@@ -99,7 +88,7 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            
+            return
             
         }
     }

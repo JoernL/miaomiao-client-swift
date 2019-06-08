@@ -11,7 +11,7 @@ import LoopKit
 import HealthKit
 
 let defaults = UserDefaults.standard
-public var observer = GlucoseObserver()
+let observer = GlucoseObserver()
 
 public struct LibreGlucose {
     public let unsmoothedGlucose: Double
