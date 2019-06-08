@@ -73,7 +73,7 @@ public class GlucoseObserver {
             
         else if glucoseValue > 200 {
             
-            DispatchQueue.main.asyncAfter(wallDeadline: .now() + .seconds(1)) {
+            DispatchQueue.global(qos: .background).asyncAfter(wallDeadline: .now() + .seconds(1)) {
                 self.vibrate(count: 3)
             }
             let content = UNMutableNotificationContent()
