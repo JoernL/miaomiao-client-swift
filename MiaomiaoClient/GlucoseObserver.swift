@@ -15,7 +15,14 @@ var firstRun : Bool = true
 
 public class GlucoseObserver {
     
-    
+    public func vibrate(count: Int) {
+        if count == 0 {
+            return
+        }
+        AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate) { [weak self] in
+            self?.vibrate(count: count - 1)
+        }
+    }
     public func observeGlucose() {
         
         let glucoseValue = defaults.float(forKey: "glucoseValue")
@@ -35,7 +42,9 @@ public class GlucoseObserver {
             
         else if glucoseValue < 90 {
             
-            AudioServicesPlaySystemSound(SystemSoundID(1107))
+            DispatchQueue.main.asyncAfter(wallDeadline: .now() + .seconds(1)) {
+                self.vibrate(count: 3)
+            }
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "LOW GLUCOSE"
@@ -59,12 +68,14 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            return
+            
         }
             
         else if glucoseValue > 200 {
             
-            AudioServicesPlaySystemSound(SystemSoundID(1107))
+            DispatchQueue.main.asyncAfter(wallDeadline: .now() + .seconds(1)) {
+                self.vibrate(count: 3)
+            }
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "HIGH GLUCOSE"
@@ -88,7 +99,7 @@ public class GlucoseObserver {
             
             notificationCenter.setNotificationCategories([category])
             notificationCenter.add(request, withCompletionHandler: nil)
-            return
+            
             
         }
     }
