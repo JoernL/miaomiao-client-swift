@@ -42,7 +42,7 @@ public class GlucoseObserver {
             
         else if glucoseValue < 90 {
             
-            vibrate(count: 3)
+            vibrate(count: 5)
             let content = UNMutableNotificationContent()
             let notificationCenter = UNUserNotificationCenter.current()
             content.title = "LOW GLUCOSE"
