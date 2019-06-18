@@ -42,17 +42,17 @@ class TrendArrowCalculation {
         NSLog("Got trendarrow value of \(s))")
         
         switch s {
-        case _ where s <= (-3.5):
+        case _ where s <= (-4.0):
             return GlucoseTrend.downDownDown
-        case _ where s <= (-2):
+        case _ where s <= (-2.5):
             return GlucoseTrend.downDown
         case _ where s <= (-1):
             return GlucoseTrend.down
         case _ where s <= (1):
             return GlucoseTrend.flat
-        case _ where s <= (2):
+        case _ where s <= (2.5):
             return GlucoseTrend.up
-        case _ where s <= (3.5):
+        case _ where s <= (4.0):
             return GlucoseTrend.upUp
         case _ where s <= (40):
             return GlucoseTrend.flat //flat is the new (tm) "unknown"!
